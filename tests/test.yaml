@@ -1,0 +1,101 @@
+# test.yaml — VLM module test configuration
+# @brief Defines unit, integration, and functional test suites for the VLM module.
+
+unit:
+  cpp:
+    - name: test_vlm_config
+      description: Validate VLM config parsing and default values
+      source: tests/unit/test_vlm_config.cpp
+      timeout: 30
+    - name: test_vlm_model_factory
+      description: Validate model factory creation and type dispatch
+      source: tests/unit/test_vlm_model_factory.cpp
+      timeout: 30
+  python:
+    - name: test_vlm_service_unit
+      description: Unit tests for VLM Python HTTP client (config, lifecycle, schemas)
+      source: tests/functional/test_vlm_service.py
+      command: python3 -m pytest tests/functional/test_vlm_service.py -v --tb=short
+      timeout: 60
+
+integration:
+  gateway:
+    - name: test_vlm_remote_lifecycle
+      description: Register remote model, switch, verify adapter is None, healthz check
+      source: gateway/tests/unit/test_vlm_service.py
+      command: python3 -m pytest tests/unit/test_vlm_service.py -v --tb=short
+      working_dir: gateway
+      env:
+        PYTHONPATH: src
+      timeout: 30
+    - name: test_vlm_http_routes
+      description: Integration test for VLM HTTP routes through gateway
+      source: gateway/tests/integration/test_http_routes.py
+      command: python3 -m pytest tests/integration/test_http_routes.py -v -k vlm --tb=short
+      working_dir: gateway
+      env:
+        PYTHONPATH: src
+      timeout: 60
+
+functional:
+  models:
+    - id: fastvlm-mm-0.5b-q4_1
+      config: examples/fastvlm/config/fastvlm.yaml
+      prompt: "What is 2+2?"
+      expected_keywords: ["4", "four", "Four"]
+      max_tokens: 50
+      timeout: 120
+    - id: Qwen3.5-0.8B
+      config: examples/fastvlm/config/qwen3_5_0.8b.yaml
+      prompt: "What is the capital of China?"
+      expected_keywords: ["Beijing", "beijing"]
+      max_tokens: 50
+      timeout: 120
+    - id: Qwen3.5-2B
+      config: examples/fastvlm/config/qwen3_5_2b.yaml
+      prompt: "What is 2+2?"
+      expected_keywords: ["4", "four"]
+      max_tokens: 50
+      timeout: 120
+    - id: Qwen3.5-4B
+      config: examples/fastvlm/config/qwen3_5_4b.yaml
+      prompt: "What is 2+2?"
+      expected_keywords: ["4", "four"]
+      max_tokens: 50
+      timeout: 120
+    - id: qwen30ba3b-mm-q4_1
+      config: examples/fastvlm/config/qwen30ba3b_mm.yaml
+      prompt: "What is 2+2?"
+      expected_keywords: ["4", "four"]
+      max_tokens: 50
+      timeout: 300
+  gateway_e2e:
+    - name: register_load_infer_unload
+      description: Full lifecycle test via gateway API (register, load, infer, unload)
+      model: fastvlm-mm-0.5b-q4_1
+      source_type: local_path
+      local_path: ~/.cache/models/vlm/fastvlm-mm-0.5b-q4_1
+      gateway_port: 18790
+      timeout: 180
+    - name: streaming_inference
+      description: Verify SSE streaming inference through gateway
+      model: fastvlm-mm-0.5b-q4_1
+      gateway_port: 18790
+      timeout: 120
+    - name: model_switch
+      description: Switch between loaded models and verify inference
+      models: [fastvlm-mm-0.5b-q4_1, Qwen3.5-0.8B]
+      gateway_port: 18790
+      timeout: 300
+
+build:
+  cmake_args:
+    - -DCMAKE_BUILD_TYPE=Release
+    - -DBUILD_VLM_EXAMPLES=ON
+    - -DBUILD_VLM_TESTS=ON
+  output_dir: build
+  artifacts:
+    - build/libvlm_core.a
+    - build/fastvlm_demo
+    - build/chat_demo
+    - build/stream_demo
