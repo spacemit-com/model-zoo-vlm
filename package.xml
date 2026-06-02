@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>vlm</name>
+  <version>0.1.0</version>
+  <description>Vision language model inference through llama-server and llama.cpp/mtmd backends.</description>
+  <maintainer email="support@spacemit.com">SpacemiT</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <build_depend>build-essential</build_depend>
+  <build_depend>llama.cpp-tools-spacemit</build_depend>
+  <build_depend>libyaml-cpp-dev</build_depend>
+  <build_depend>nlohmann-json3-dev</build_depend>
+  <exec_depend>curl</exec_depend>
+  <exec_depend>llama.cpp-tools-spacemit</exec_depend>
+  <exec_depend>libyaml-cpp0.8</exec_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>

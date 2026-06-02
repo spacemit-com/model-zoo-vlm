@@ -1,0 +1,22 @@
+# qwen3_5_2b.yaml — Configuration for Qwen3.5-2B
+# @brief Default configuration pointing to the cached model directory.
+
+backend: server
+model_dir: ~/.cache/models/vlm/Qwen3.5-2B
+media_backend: smt
+cpu_affinity: 0-7
+n_gpu_layers: 0
+no_warmup: true
+host: 127.0.0.1
+port: 8093
+generation:
+  max_tokens: 150
+  context_size: 4096
+  top_k: 40
+  top_p: 0.95
+  temperature: 0.2
+  repeat_penalty: 1.2
+  threads: 8
+  batch_threads: 8
+  enable_thinking: false
+  history_policy: last
