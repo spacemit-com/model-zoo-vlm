@@ -1,0 +1,22 @@
+# fastvlm.yaml — Configuration for FastVLM-MM 0.5B (Q4_1 quantized)
+# @brief Default configuration pointing to the cached model directory.
+
+backend: server
+model_dir: /home/bianbu/.cache/models/vlm/fastvlm-mm-0.5b-q4_1
+media_backend: smt
+cpu_affinity: 0-7
+n_gpu_layers: 0
+no_warmup: true
+host: 127.0.0.1
+port: 8093
+generation:
+  max_tokens: 150
+  context_size: 4096
+  top_k: 40
+  top_p: 0.95
+  temperature: 0.2
+  repeat_penalty: 1.2
+  threads: 8
+  batch_threads: 8
+  enable_thinking: false
+  history_policy: last
