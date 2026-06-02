@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "sampler.h"
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 
 struct llama_model;
 struct llama_context;

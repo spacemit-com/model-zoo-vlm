@@ -11,7 +11,7 @@
 #include <memory>
 #include <string>
 
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 
 namespace {
 

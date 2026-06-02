@@ -8,7 +8,7 @@
 
 | 类型 | 文件/入口 | 用途 |
 | --- | --- | --- |
-| C++ 头文件 | `include/vlm/vlm_service.h` | 原生 C++ 服务接口，提供同步、异步、流式、单轮、多轮、配置、指标能力 |
+| C++ 头文件 | `include/vlm_service.h` | 原生 C++ 服务接口，提供同步、异步、流式、单轮、多轮、配置、指标能力 |
 | Python API | `src/python/vlm.py` | Python HTTP 封装，纯 Python 实现，通过 OpenAI 兼容 HTTP API 与 llama-server 通信 |
 | HTTP API | `gateway/api.py` | OpenAI 兼容 `/chat/completions`，以及模型管理、健康检查、指标接口 |
 | 验证脚本 | `tests/functional/test_vlm_service.py` | 生命周期、异常、Gateway、边界测试 |
@@ -31,7 +31,7 @@
 
 ## 3. C++ 公共接口
 
-头文件：`include/vlm/vlm_service.h`
+头文件：`include/vlm_service.h`
 
 ### 3.1 命名空间与枚举
 
@@ -276,7 +276,7 @@ std::unique_ptr<VlmService> CreateVlmServiceFromConfig(
 ### 3.8 C++ 使用示例
 
 ```cpp
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 #include <iostream>
 
 int main() {

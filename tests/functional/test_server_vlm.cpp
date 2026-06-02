@@ -15,7 +15,7 @@
 #include <string>
 
 #include "server_vlm_model.h"
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 
 static int g_passed = 0;
 static int g_failed = 0;

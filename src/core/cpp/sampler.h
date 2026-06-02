@@ -12,7 +12,7 @@
 #include <functional>
 #include <string>
 
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 
 struct llama_context;
 struct llama_model;
