@@ -13,7 +13,7 @@
 #include <string>
 #include <unistd.h>
 
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 #include "vlm_config.h"
 
 using namespace vlm;

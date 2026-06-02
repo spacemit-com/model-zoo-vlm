@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 #include "server_vlm_model.h"
 
 using namespace vlm;

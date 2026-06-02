@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 
 #include <memory>
 #include <string>

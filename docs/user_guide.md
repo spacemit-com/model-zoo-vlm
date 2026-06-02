@@ -61,7 +61,7 @@ curl -X POST http://127.0.0.1:18790/v1/vlm/chat/completions \
 通过 C++ API 直接调用 VLM 推理，适合对延迟敏感的嵌入式场景。
 
 ```cpp
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 
 int main() {
     vlm::VlmService service("config/fastvlm.yaml");

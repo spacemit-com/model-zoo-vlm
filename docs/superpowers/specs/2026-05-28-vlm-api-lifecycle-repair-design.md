@@ -244,7 +244,7 @@ Gateway：
 
 最终对外头文件应包含：
 
-### `include/vlm/vlm_service.h`
+### `include/vlm_service.h`
 
 - 保留现有枚举、配置、输入输出、消息、指标。
 - 新增 `VlmRequestOptions`。

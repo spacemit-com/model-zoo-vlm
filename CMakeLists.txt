@@ -60,7 +60,7 @@ target_link_libraries(vlm_core
 )
 
 install(TARGETS vlm_core DESTINATION lib)
-install(FILES include/vlm/vlm_service.h DESTINATION include/vlm)
+install(FILES include/vlm_service.h DESTINATION include)
 
 
 

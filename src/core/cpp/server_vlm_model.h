@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include "vlm/vlm_service.h"
+#include "vlm_service.h"
 
 namespace vlm {
 
