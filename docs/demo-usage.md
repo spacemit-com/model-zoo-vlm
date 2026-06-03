@@ -54,40 +54,46 @@ python3 examples/fastvlm/python/stream_demo.py \
 
 ## 3. Gateway Demo
 
-HTTP Gateway 使用 OpenAI 兼容接口，完整端点定义见 [API 文档](production/vlm_api_reference.md)，curl 级端到端样例见 [Gateway curl 测试报告](production/vlm_gateway_curl_test_report.md)。
+HTTP Gateway 使用 OpenAI 兼容接口，完整端点定义见 [API 文档](production/vlm_api_reference.md)。
 
 ### 3.1 启动 Gateway
 
 ```bash
-cd /home/bianbu/model-zoo-vlm/vlm
-PYTHONPATH=$PWD/src/python:$PWD \
-VLM_LIB_PATH=$PWD/build/libvlm.so \
-python3 -m uvicorn vlm_gateway_app:app \
-  --app-dir /tmp \
-  --host 127.0.0.1 \
-  --port 8000
+cd /home/bianbu/model-zoo/gateway
+PYTHONPATH=src python3 -m uvicorn spacemit_ai_gateway.app.main:app \
+  --host 0.0.0.0 \
+  --port 18790
 ```
 
-### 3.2 发送非流式请求
+### 3.2 加载模型
+
+```bash
+# 加载预设模型
+curl -X POST http://127.0.0.1:18790/v1/vlm/models/load \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"fastvlm-mm-0.5b-q4_1"}'
+```
+
+### 3.3 发送非流式请求
 
 ```bash
 curl -sS http://127.0.0.1:18790/v1/vlm/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{
-    "model":"vlm",
+    "model":"fastvlm-mm-0.5b-q4_1",
     "messages":[{"role":"user","content":"用一句话描述这张图片"}],
     "max_tokens":64,
     "stream":false
   }'
 ```
 
-### 3.3 发送流式请求
+### 3.4 发送流式请求
 
 ```bash
 curl -sS http://127.0.0.1:18790/v1/vlm/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{
-    "model":"vlm",
+    "model":"fastvlm-mm-0.5b-q4_1",
     "messages":[{"role":"user","content":"Count from one to three."}],
     "max_tokens":32,
     "stream":true

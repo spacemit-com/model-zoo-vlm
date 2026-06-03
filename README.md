@@ -12,7 +12,7 @@ SpacemiT VLM (Vision Language Model) 推理服务组件，面向进迭时空 K3 
 | [测试文档](docs/testing.md) | 单元测试、功能测试、真实模型矩阵和 Gateway curl 测试入口 |
 | [架构文档](docs/architecture.md) | 系统架构、Server 模式数据流、TCM 硬件加速说明 |
 | [生产交付说明](docs/production/vlm_external_api_delivery.md) | 对外交付范围、生产建议和版本结论 |
-| [Gateway curl 测试报告](docs/production/vlm_gateway_curl_test_report.md) | Gateway 端到端实测记录与指标验证 |
+
 
 
 > 注意：在 `/home/bianbu/model-zoo` 目录中，ai-gateway 复制位于 `model-zoo/gateway`，其中 VLM 域目前通过远程 OpenAI 兼容服务代理方式接入本组件。Gateway VLM 域已支持本地 llama-server 模式（通过 VlmLlamaAdapter 启动 llama-server 子进程）和远程代理模式。本地模式与 LLM 域的接入方式完全统一，均通过 llama-server HTTP API 调用。
