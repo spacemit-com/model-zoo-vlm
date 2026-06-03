@@ -11,7 +11,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(BUILD_VLM_EXAMPLES "Build VLM examples" ON)
 option(BUILD_VLM_TESTS "Build VLM tests" ON)
 option(BUILD_VLM_BENCHMARKS "Build VLM benchmarks" OFF)
-option(VLM_ENABLE_DIRECT_BACKEND "Enable direct llama.cpp/mtmd backend" ON)
 
 find_path(LLAMA_INCLUDE_DIR llama.h PATHS /usr/include /usr/local/include)
 find_library(LLAMA_LIBRARY NAMES llama PATHS /usr/lib /usr/local/lib)
@@ -22,10 +21,9 @@ find_library(GGML_BASE_LIBRARY NAMES ggml-base PATHS /usr/lib /usr/local/lib)
 find_library(GGML_CPU_LIBRARY NAMES ggml-cpu PATHS /usr/lib /usr/local/lib)
 find_package(yaml-cpp REQUIRED)
 
-if(VLM_ENABLE_DIRECT_BACKEND)
-    if(NOT LLAMA_INCLUDE_DIR OR NOT LLAMA_LIBRARY OR NOT MTMD_LIBRARY OR NOT GGML_LIBRARY)
-        message(FATAL_ERROR "Direct VLM backend requires llama.cpp-tools-spacemit headers and libraries")
-    endif()
+
+if(NOT LLAMA_INCLUDE_DIR OR NOT LLAMA_LIBRARY OR NOT MTMD_LIBRARY OR NOT GGML_LIBRARY)
+    message(FATAL_ERROR "VLM requires llama.cpp-tools-spacemit headers and libraries. Install: sudo apt install llama.cpp-tools-spacemit")
 endif()
 
 add_library(vlm_core

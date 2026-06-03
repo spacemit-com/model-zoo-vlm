@@ -35,19 +35,15 @@ cd /home/bianbu/model-zoo/gateway
 PYTHONPATH=src python3 -m uvicorn spacemit_ai_gateway.app.main:app \
   --host 0.0.0.0 --port 18790
 
-# 注册并加载模型
-curl -X POST http://127.0.0.1:18790/v1/vlm/models/register \
-  -H "Content-Type: application/json" \
-  -d {model: fastvlm-0.5b, source_type: local_path, local_path: /path/to/model}
-
+# 加载预设模型
 curl -X POST http://127.0.0.1:18790/v1/vlm/models/load \
   -H "Content-Type: application/json" \
-  -d {model: fastvlm-0.5b}
+  -d '{"model":"fastvlm-mm-0.5b-q4_1"}'
 
 # 推理
 curl -X POST http://127.0.0.1:18790/v1/vlm/chat/completions \
   -H "Content-Type: application/json" \
-  -d {model: fastvlm-0.5b, messages: [{role: user, content: Hello}], max_tokens: 50}
+  -d '{"model":"fastvlm-mm-0.5b-q4_1","messages":[{"role":"user","content":"Hello"}],"max_tokens":50}'
 ```
 
 **适用场景：**
@@ -64,9 +60,34 @@ curl -X POST http://127.0.0.1:18790/v1/vlm/chat/completions \
 #include "vlm_service.h"
 
 int main() {
-    vlm::VlmService service("config/fastvlm.yaml");
-    service.start();
-    service.stop();
+    std::string error;
+    // 从 YAML 配置文件创建服务
+    auto service = vlm::CreateVlmServiceFromConfig("config/fastvlm.yaml", &error);
+    if (!service) {
+        fprintf(stderr, "Failed to create service: %s\n", error.c_str());
+        return 1;
+    }
+
+    // 单轮文本生成
+    vlm::VlmInput input;
+    input.prompt = "Describe this image";
+    input.image_path = "/path/to/image.jpg";
+
+    vlm::VlmResult result;
+    if (service->Generate(input, &result, &error)) {
+        printf("Result: %s\n", result.text.c_str());
+        printf("Tokens/s: %.1f\n", result.tokens_per_second);
+    }
+
+    // 多轮对话
+    std::vector<vlm::VlmChatMessage> messages = {
+        vlm::VlmChatMessage::UserWithImage("What is in this image?", "/path/to/image.jpg"),
+    };
+    vlm::VlmChatResult chat_result;
+    service->Chat(messages, &chat_result, &error);
+
+    // 释放资源
+    service->Shutdown();
     return 0;
 }
 ```
@@ -278,14 +299,41 @@ with VlmService("config/fastvlm.yaml") as svc:
 ```bash
 curl -X POST http://127.0.0.1:18790/v1/vlm/models/register \
   -H "Content-Type: application/json" \
-  -d {model: remote-vlm, source_type: remote, api_base_url: http://192.168.1.100:8093/v1}
+  -d '{"model":"remote-vlm","source_type":"remote","api_base_url":"http://192.168.1.100:8093/v1"}'
 
 curl -X POST http://127.0.0.1:18790/v1/vlm/models/switch \
   -H "Content-Type: application/json" \
-  -d {model: remote-vlm}
+  -d '{"model":"remote-vlm"}'
 ```
 
-### 4.5 性能监控
+### 4.5 C++ 流式推理
+
+```cpp
+#include "vlm_service.h"
+
+int main() {
+    std::string error;
+    auto service = vlm::CreateVlmServiceFromConfig("config/fastvlm.yaml", &error);
+    if (!service) return 1;
+
+    vlm::VlmInput input;
+    input.prompt = "Tell me a story";
+
+    vlm::VlmResult result;
+    service->GenerateStream(input,
+        [](const std::string& chunk, bool is_done, const std::string& err) {
+            if (!err.empty()) { fprintf(stderr, "Error: %s\n", err.c_str()); return false; }
+            printf("%s", chunk.c_str());
+            fflush(stdout);
+            return !is_done;  // return false to stop
+        }, &result, &error);
+
+    service->Shutdown();
+    return 0;
+}
+```
+
+### 4.6 性能监控
 
 ```python
 from vlm import VlmService
@@ -293,8 +341,8 @@ from vlm import VlmService
 with VlmService("config/fastvlm.yaml") as svc:
     result = svc.generate("Hello")
     metrics = svc.get_metrics()
-    print(f"Total requests: {metrics[total_requests]}")
-    print(f"Last latency: {metrics[last_latency_ms]:.1f} ms")
+    print(f"Total requests: {metrics['total_requests']}")
+    print(f"Last latency: {metrics['last_latency_ms']:.1f} ms")
 ```
 
 ---
@@ -345,7 +393,7 @@ sudo iptables -A INPUT -p tcp --dport 18790 -j ACCEPT
 
 1. **进程管理：** 使用 systemd 或 supervisor 管理 llama-server 和 Gateway 进程
 2. **日志管理：** 配置日志轮转，避免磁盘写满
-3. **健康检查：** 定期调用 `/health` 端点监控服务状态
+3. **健康检查：** 定期调用 `/healthz` 端点监控服务状态
 4. **资源隔离：** 使用 cgroup 限制内存和 CPU 使用
 5. **安全加固：** Gateway 启用 API Key 认证，VLM 服务绑定 127.0.0.1
 
