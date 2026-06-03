@@ -159,6 +159,13 @@ bool LlamaVlmModel::DoGenerate(const VlmInput& input,
     }
 
     int32_t chunk_result = 0;
+    if (!mtmd_ctx_) {
+        // No vision context: cannot use mtmd tokenization path
+        SetError(error, "No vision context initialized; direct backend requires mtmd for tokenization");
+        mtmd_input_chunks_free(chunks);
+        if (bitmap) mtmd_bitmap_free(bitmap);
+        return false;
+    }
     if (bitmap) {
         const mtmd_bitmap* bitmaps[] = {bitmap};
         chunk_result = mtmd_tokenize(mtmd_ctx_, chunks, &mm_text, bitmaps, 1);
