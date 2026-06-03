@@ -85,9 +85,6 @@ PYTHONPATH=$PWD/src/python:$PWD \
 - ONNX Runtime constant folding warning：不影响 vision 推理通过。
 - FastAPI `on_event` deprecation warning：不影响当前接口行为。
 
-## 3. Gateway curl 测试报告
-
-完整报告见 [production/vlm_gateway_curl_test_report.md](production/vlm_gateway_curl_test_report.md)。
 
 ## 3. Gateway curl 测试结论
 
