@@ -176,7 +176,7 @@ no_warmup: true
 
 # 服务监听地址和端口
 host: 127.0.0.1
-port: 8071
+port: 8093
 
 # 生成参数
 generation:
@@ -199,9 +199,9 @@ generation:
 
 | 配置文件 | 模型 | 端口 | 说明 |
 |---------|------|------|------|
-| `fastvlm.yaml` | FastVLM-MM 0.5B Q4_1 | 8071 | 轻量级，适合嵌入式部署 |
-| `qwen3_5_0.8b.yaml` | Qwen3.5-0.8B | 8072 | 中等规模，平衡精度与速度 |
-| `qwen3_5_2b.yaml` | Qwen3.5-2B | 8073 | 高精度，推荐服务器部署 |
+| `fastvlm.yaml` | FastVLM-MM 0.5B Q4_1 | 8093 | 轻量级，适合嵌入式部署 |
+| `qwen3_5_0.8b.yaml` | Qwen3.5-0.8B | 8094 | 中等规模，平衡精度与速度 |
+| `qwen3_5_2b.yaml` | Qwen3.5-2B | 8095 | 高精度，推荐服务器部署 |
 
 ### 2.3 llama-server 启动命令
 
@@ -214,7 +214,7 @@ OMP_NUM_THREADS=8 taskset -c 0-7 llama-server \
   --smt-config-dir /path/to/model/dir \
   --media-path /path/to/images \
   -ngl 0 --ctx-size 4096 -t 8 -tb 8 \
-  --host 127.0.0.1 --port 8071 \
+  --host 127.0.0.1 --port 8093 \
   --no-warmup --reasoning off
 ```
 
@@ -230,18 +230,18 @@ OMP_NUM_THREADS=8 taskset -c 0-7 llama-server \
   --vision-backend smt \
   --smt-config-dir ~/.cache/models/vlm/Qwen3.5-2B \
   --media-path /home/user/pictures \
-  -ngl 0 -c 4096 --port 8071 -t 8 -tb 8 --no-warmup
+  -ngl 0 -c 4096 --port 8093 -t 8 -tb 8 --no-warmup
 
 # 健康检查
-curl -s http://127.0.0.1:8071/health
+curl -s http://127.0.0.1:8093/health
 
 # 文本推理
-curl -s http://127.0.0.1:8071/v1/chat/completions \
+curl -s http://127.0.0.1:8093/v1/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{"messages":[{"role":"user","content":"Hello"}],"max_tokens":30}'
 
 # 图像推理 (file:// 路径相对于 --media-path)
-curl -s http://127.0.0.1:8071/v1/chat/completions \
+curl -s http://127.0.0.1:8093/v1/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{"messages":[{"role":"user","content":[{"type":"text","text":"描述这张图片"},{"type":"image_url","image_url":{"url":"file://image.jpg"}}]}],"max_tokens":100}'
 

@@ -2,7 +2,7 @@
 # @brief Default configuration pointing to the cached model directory.
 
 backend: server
-model_dir: /home/bianbu/.cache/models/vlm/fastvlm-mm-0.5b-q4_1
+model_dir: ~/.cache/models/vlm/fastvlm-mm-0.5b-q4_1
 media_backend: smt
 cpu_affinity: 0-7
 n_gpu_layers: 0

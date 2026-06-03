@@ -16,18 +16,18 @@
 
 ## 2. 能力边界总览
 
-| 能力 | C++ | Python | HTTP Gateway |
+| 能力 | C++ | Python | HTTP Gateway | 备注 |
 | --- | --- | --- | --- | --- |
-| 单轮文本生成 | 支持 | 支持 | 通过 chat/completions 支持 |
+| 单轮文本生成 | 支持 | 支持 | 通过 chat/completions 支持 | |
 | 单轮图文生成 | `image_path` / `image_bytes` | `image_path` / `image_bytes` | `image_path` / `image_bytes` | multimodal content `image_url.url` |
-| 多轮文本对话 | 支持 | 支持 | 支持 |
+| 多轮文本对话 | 支持 | 支持 | 支持 | |
 | 多轮图文对话 | 支持 | 支持 | 支持，当前取 OpenAI content 数组中的图片 URL |
-| 同步输出 | 支持 | 支持 | 支持 |
-| 流式输出 | 支持 | 支持 | SSE 支持 |
+| 同步输出 | 支持 | 支持 | 支持 | |
+| 流式输出 | 支持 | 支持 | SSE 支持 | |
 | 单次请求生成参数覆盖 | 通过更新服务配置或实现层调用 | `*_with_options` 支持同步接口 | `generate()` / `chat()` 支持 | 非流式支持 |
 | 流式单次参数覆盖 | 服务配置级别 | 当前 C 流式接口不接收 options | 当前使用服务配置 | 当前不透传请求级 options |
 | 生命周期管理 | `Shutdown()` | `close()` / `shutdown()` | `close()` / context manager | `/models/load` / `/models/unload` |
-| 指标 | `GetMetrics()` | `get_metrics()` | `/stats` / `/info` |
+| 指标 | `GetMetrics()` | `get_metrics()` | `/stats` / `/info` | |
 
 ## 3. C++ 公共接口
 

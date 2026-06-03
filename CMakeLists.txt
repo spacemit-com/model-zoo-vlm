@@ -26,6 +26,13 @@ if(NOT LLAMA_INCLUDE_DIR OR NOT LLAMA_LIBRARY OR NOT MTMD_LIBRARY OR NOT GGML_LI
     message(FATAL_ERROR "VLM requires llama.cpp-tools-spacemit headers and libraries. Install: sudo apt install llama.cpp-tools-spacemit")
 endif()
 
+# Validate all required library variables are found (not NOTFOUND)
+foreach(_lib_var LLAMA_LIBRARY LLAMA_COMMON_LIBRARY MTMD_LIBRARY GGML_LIBRARY GGML_BASE_LIBRARY GGML_CPU_LIBRARY)
+    if(NOT ${_lib_var})
+        message(FATAL_ERROR "Required library ${_lib_var} not found")
+    endif()
+endforeach()
+
 add_library(vlm_core
     src/core/cpp/llama_vlm_model.cpp
     src/core/cpp/mtmd_image.cpp
