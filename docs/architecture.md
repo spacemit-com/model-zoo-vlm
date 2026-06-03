@@ -63,11 +63,3 @@ spacemit-tcm-smi
 spacemit-tcm-smi -c
 ```
 
-### 2.3 NUMA 兼容性
-
-K3 平台为 NUMA 架构，需注意：
-
-- 使用 `taskset -c 0-7` 绑定 CPU 亲和性，避免跨 NUMA 节点访问
-- 设置 `OMP_NUM_THREADS=8` 控制 OpenMP 线程数
-- 使用 `--no-warmup` 跳过热身阶段，避免 NUMA 线程绑定崩溃
-- 组件配置中 `cpu_affinity` 和 `no_warmup` 默认已设置
