@@ -13,7 +13,15 @@
 #include "vlm_service.h"
 #include "server_vlm_model.h"
 
-using namespace vlm;
+using vlm::BackendType;
+using vlm::CreateVlmService;
+using vlm::CreateVlmServiceFromConfig;
+using vlm::ServerVlmModel;
+using vlm::VlmChatMessage;
+using vlm::VlmGenerationConfig;
+using vlm::VlmMetrics;
+using vlm::VlmModelConfig;
+using vlm::VlmHistoryPolicy;
 
 static void TestCreateWithEmptyConfig() {
     std::string error;

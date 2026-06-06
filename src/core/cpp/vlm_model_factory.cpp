@@ -19,7 +19,7 @@
 namespace vlm {
 
 std::unique_ptr<VlmService> CreateVlmService(const VlmModelConfig& config,
-                                             std::string* error) {
+                                            std::string* error) {
     VlmModelConfig validated = config;
     if (!ValidateVlmModelConfig(&validated, error)) {
         return nullptr;

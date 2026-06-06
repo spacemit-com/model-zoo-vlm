@@ -24,7 +24,7 @@ LlamaSampler::~LlamaSampler() {
 }
 
 bool LlamaSampler::Initialize(const VlmGenerationConfig& config,
-                              std::string* error) {
+                                std::string* error) {
     if (sampler_) {
         llama_sampler_free(sampler_);
     }
@@ -45,8 +45,8 @@ bool LlamaSampler::Initialize(const VlmGenerationConfig& config,
 }
 
 bool LlamaSampler::Sample(llama_context* ctx, const llama_model* model,
-                           int max_tokens, std::string* output,
-                           VlmUsage* usage, std::string* error) {
+                            int max_tokens, std::string* output,
+                            VlmUsage* usage, std::string* error) {
     if (!sampler_ || !ctx || !model) {
         SetError(error, "Sampler not initialized");
         return false;
@@ -98,8 +98,8 @@ bool LlamaSampler::Sample(llama_context* ctx, const llama_model* model,
 }
 
 bool LlamaSampler::SampleStream(llama_context* ctx, const llama_model* model,
-                                 int max_tokens, VlmStreamCallback callback,
-                                 VlmUsage* usage, std::string* error) {
+                                int max_tokens, VlmStreamCallback callback,
+                                VlmUsage* usage, std::string* error) {
     if (!sampler_ || !ctx || !model) {
         SetError(error, "Sampler not initialized");
         return false;

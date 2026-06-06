@@ -199,12 +199,12 @@ bool LlamaVlmModel::DoGenerate(const VlmInput& input,
 
     if (callback) {
         ok = sampler_.SampleStream(context_, model_,
-                                   config_.generation.max_tokens,
-                                   callback, &result_usage, error);
+                                    config_.generation.max_tokens,
+                                    callback, &result_usage, error);
     } else {
         ok = sampler_.Sample(context_, model_,
-                             config_.generation.max_tokens,
-                             &result_text, &result_usage, error);
+                            config_.generation.max_tokens,
+                            &result_text, &result_usage, error);
     }
 
     if (bitmap) {
@@ -225,8 +225,8 @@ bool LlamaVlmModel::DoGenerate(const VlmInput& input,
 }
 
 bool LlamaVlmModel::Generate(const VlmInput& input,
-                              VlmResult* result,
-                              std::string* error) {
+                                VlmResult* result,
+                                std::string* error) {
     std::lock_guard<std::mutex> lock(mutex_);
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -259,8 +259,8 @@ bool LlamaVlmModel::Generate(const VlmInput& input,
 }
 
 bool LlamaVlmModel::GenerateAsync(const VlmInput& input,
-                                   VlmAsyncCallback callback,
-                                   std::string* error) {
+                                    VlmAsyncCallback callback,
+                                    std::string* error) {
     VlmResult result;
     std::string err;
     bool ok = Generate(input, &result, &err);
@@ -304,8 +304,8 @@ bool LlamaVlmModel::GenerateStream(const VlmInput& input,
 }
 
 bool LlamaVlmModel::Chat(const std::vector<VlmChatMessage>& messages,
-                          VlmChatResult* result,
-                          std::string* error) {
+                            VlmChatResult* result,
+                            std::string* error) {
     std::string last_user_text;
     std::string image_path;
     std::vector<uint8_t> image_bytes;

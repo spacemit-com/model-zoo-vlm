@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_SRC_CORE_CPP_SERVER_VLM_MODEL_H_
-#define VLM_SRC_CORE_CPP_SERVER_VLM_MODEL_H_
+#ifndef SERVER_VLM_MODEL_H
+#define SERVER_VLM_MODEL_H
 
 #include <atomic>
 #include <mutex>
@@ -28,18 +28,18 @@ public:
     void Shutdown() override;
     bool IsReady() const override;
     bool Generate(const VlmInput& input,
-                  VlmResult* result,
-                  std::string* error) override;
+                    VlmResult* result,
+                    std::string* error) override;
     bool GenerateAsync(const VlmInput& input,
-                       VlmAsyncCallback callback,
-                       std::string* error) override;
+                        VlmAsyncCallback callback,
+                        std::string* error) override;
     bool GenerateStream(const VlmInput& input,
                         VlmStreamCallback callback,
                         VlmResult* result,
                         std::string* error) override;
     bool Chat(const std::vector<VlmChatMessage>& messages,
-              VlmChatResult* result,
-              std::string* error) override;
+                VlmChatResult* result,
+                std::string* error) override;
     bool ChatStream(const std::vector<VlmChatMessage>& messages,
                     VlmStreamCallback callback,
                     VlmChatResult* result,
@@ -66,16 +66,16 @@ private:
     bool StartServerIfNeeded(std::string* error);
     bool ServerResponds() const;
     static std::string ImageToBase64(const std::string& image_path,
-                                     std::string* error);
+                                    std::string* error);
     bool SyncRequest(const std::string& payload,
-                     std::string* response,
-                     std::string* error);
+                    std::string* response,
+                    std::string* error);
     bool StreamRequest(const std::string& payload,
-                       VlmStreamCallback callback,
-                       std::string* full_text,
-                       double* ttft_ms,
-                       int64_t* output_chunks,
-                       std::string* error);
+                        VlmStreamCallback callback,
+                        std::string* full_text,
+                        double* ttft_ms,
+                        int64_t* output_chunks,
+                        std::string* error);
     bool ExtractImageBase64(const std::vector<VlmChatMessage>& messages,
                             std::string* image_b64,
                             std::string* error);
@@ -89,4 +89,4 @@ private:
 
 }  // namespace vlm
 
-#endif  // VLM_SRC_CORE_CPP_SERVER_VLM_MODEL_H_
+#endif  // SERVER_VLM_MODEL_H

@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_SRC_CORE_CPP_SAMPLER_H_
-#define VLM_SRC_CORE_CPP_SAMPLER_H_
+#ifndef SAMPLER_H
+#define SAMPLER_H
 
 #include <functional>
 #include <string>
@@ -30,8 +30,8 @@ public:
                 int max_tokens, std::string* output,
                 VlmUsage* usage, std::string* error);
     bool SampleStream(llama_context* ctx, const llama_model* model,
-                      int max_tokens, VlmStreamCallback callback,
-                      VlmUsage* usage, std::string* error);
+                        int max_tokens, VlmStreamCallback callback,
+                        VlmUsage* usage, std::string* error);
 
 private:
     llama_sampler* sampler_ = nullptr;
@@ -40,4 +40,4 @@ private:
 
 }  // namespace vlm
 
-#endif  // VLM_SRC_CORE_CPP_SAMPLER_H_
+#endif  // SAMPLER_H

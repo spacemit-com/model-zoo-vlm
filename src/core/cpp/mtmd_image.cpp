@@ -36,9 +36,9 @@ MtmdBitmapPtr MakeNullBitmap() {
 }
 
 MtmdBitmapPtr LoadBitmapFromInput(mtmd_context* ctx,
-                                  const std::string& image_path,
-                                  const std::vector<uint8_t>& image_bytes,
-                                  std::string* error) {
+                                    const std::string& image_path,
+                                    const std::vector<uint8_t>& image_bytes,
+                                    std::string* error) {
     if (!ctx) {
         LogInfo("WARNING: mtmd_context is null; image decoding may succeed but "
                 "subsequent tokenization/evaluation requires a valid context");
@@ -94,7 +94,7 @@ MtmdBitmapPtr LoadBitmapFromInput(mtmd_context* ctx,
             LogInfo("mtmd_helper_bitmap_init_from_buf returned NULL for file: %s",
                     image_path.c_str());
             SetError(error,
-                     "mtmd_helper_bitmap_init_from_buf failed for: " + image_path);
+                    "mtmd_helper_bitmap_init_from_buf failed for: " + image_path);
             return MakeNullBitmap();
         }
 

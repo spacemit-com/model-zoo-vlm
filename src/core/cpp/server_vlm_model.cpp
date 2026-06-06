@@ -80,8 +80,8 @@ bool ServerVlmModel::IsReady() const {
 }
 
 bool ServerVlmModel::Generate(const VlmInput& input,
-                               VlmResult* result,
-                               std::string* error) {
+                                VlmResult* result,
+                                std::string* error) {
     if (!StartServerIfNeeded(error)) {
         return false;
     }
@@ -94,7 +94,7 @@ bool ServerVlmModel::Generate(const VlmInput& input,
         }
     } else if (!input.image_bytes.empty()) {
         std::vector<unsigned char> bytes(input.image_bytes.begin(),
-                                         input.image_bytes.end());
+                                        input.image_bytes.end());
         image_b64 = Base64Encode(bytes);
     }
 
@@ -102,7 +102,7 @@ bool ServerVlmModel::Generate(const VlmInput& input,
         VlmChatMessage::UserWithImage(input.prompt, input.image_path)
     };
     std::string payload = BuildChatCompletionPayload(config_, messages,
-                                                     image_b64, false);
+                                                    image_b64, false);
     std::string response;
     auto start = std::chrono::high_resolution_clock::now();
     if (!SyncRequest(payload, &response, error)) {
@@ -150,9 +150,9 @@ bool ServerVlmModel::GenerateAsync(const VlmInput& input,
 }
 
 bool ServerVlmModel::GenerateStream(const VlmInput& input,
-                                     VlmStreamCallback callback,
-                                     VlmResult* result,
-                                     std::string* error) {
+                                    VlmStreamCallback callback,
+                                    VlmResult* result,
+                                    std::string* error) {
     if (!StartServerIfNeeded(error)) {
         return false;
     }
@@ -165,7 +165,7 @@ bool ServerVlmModel::GenerateStream(const VlmInput& input,
         }
     } else if (!input.image_bytes.empty()) {
         std::vector<unsigned char> bytes(input.image_bytes.begin(),
-                                         input.image_bytes.end());
+                                        input.image_bytes.end());
         image_b64 = Base64Encode(bytes);
     }
 
@@ -173,13 +173,13 @@ bool ServerVlmModel::GenerateStream(const VlmInput& input,
         VlmChatMessage::UserWithImage(input.prompt, input.image_path)
     };
     std::string payload = BuildChatCompletionPayload(config_, messages,
-                                                     image_b64, true);
+                                                    image_b64, true);
     std::string full_text;
     double ttft_ms = 0.0;
     int64_t output_chunks = 0;
     auto start = std::chrono::high_resolution_clock::now();
     if (!StreamRequest(payload, callback, &full_text, &ttft_ms,
-                       &output_chunks, error)) {
+                        &output_chunks, error)) {
         return false;
     }
     auto end = std::chrono::high_resolution_clock::now();
@@ -206,8 +206,8 @@ bool ServerVlmModel::GenerateStream(const VlmInput& input,
 }
 
 bool ServerVlmModel::Chat(const std::vector<VlmChatMessage>& messages,
-                           VlmChatResult* result,
-                           std::string* error) {
+                            VlmChatResult* result,
+                            std::string* error) {
     if (!StartServerIfNeeded(error)) {
         return false;
     }
@@ -218,7 +218,7 @@ bool ServerVlmModel::Chat(const std::vector<VlmChatMessage>& messages,
     }
 
     std::string payload = BuildChatCompletionPayload(config_, messages,
-                                                     image_b64, false);
+                                                    image_b64, false);
     std::string response;
     auto start = std::chrono::high_resolution_clock::now();
     if (!SyncRequest(payload, &response, error)) {
@@ -250,9 +250,9 @@ bool ServerVlmModel::Chat(const std::vector<VlmChatMessage>& messages,
 }
 
 bool ServerVlmModel::ChatStream(const std::vector<VlmChatMessage>& messages,
-                                 VlmStreamCallback callback,
-                                 VlmChatResult* result,
-                                 std::string* error) {
+                                VlmStreamCallback callback,
+                                VlmChatResult* result,
+                                std::string* error) {
     if (!StartServerIfNeeded(error)) {
         return false;
     }
@@ -263,13 +263,13 @@ bool ServerVlmModel::ChatStream(const std::vector<VlmChatMessage>& messages,
     }
 
     std::string payload = BuildChatCompletionPayload(config_, messages,
-                                                     image_b64, true);
+                                                    image_b64, true);
     std::string full_text;
     double ttft_ms = 0.0;
     int64_t output_chunks = 0;
     auto start = std::chrono::high_resolution_clock::now();
     if (!StreamRequest(payload, callback, &full_text, &ttft_ms,
-                       &output_chunks, error)) {
+                        &output_chunks, error)) {
         return false;
     }
     auto end = std::chrono::high_resolution_clock::now();
@@ -302,7 +302,7 @@ bool ServerVlmModel::Reset(std::string* error) {
 }
 
 bool ServerVlmModel::UpdateGenerationConfig(const VlmGenerationConfig& config,
-                                             std::string* error) {
+                                            std::string* error) {
     std::lock_guard<std::mutex> lock(mutex_);
     config_.generation = config;
     return true;
@@ -417,7 +417,7 @@ std::string ServerVlmModel::BuildChatCompletionPayload(
             js << ",\"content\":[";
             js << "{\"type\":\"text\",\"text\":\"" << JsonEscape(m.content) << "\"},";
             js << "{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,"
-               << image_base64 << "\"}}";
+                << image_base64 << "\"}}";
             js << "]";
         } else {
             js << ",\"content\":\"" << JsonEscape(m.content) << "\"";
@@ -457,10 +457,10 @@ std::string ServerVlmModel::BuildChatCompletionPayload(
 }
 
 void ServerVlmModel::UpdateMetricsForRequest(VlmMetrics* metrics,
-                                             double latency_ms,
-                                             double ttft_ms,
-                                             int64_t output_tokens,
-                                             double tokens_per_second) {
+                                            double latency_ms,
+                                            double ttft_ms,
+                                            int64_t output_tokens,
+                                            double tokens_per_second) {
     if (!metrics) {
         return;
     }
@@ -541,7 +541,7 @@ bool ServerVlmModel::ServerResponds() const {
 }
 
 std::string ServerVlmModel::ImageToBase64(const std::string& image_path,
-                                           std::string* error) {
+                                            std::string* error) {
     std::string data = ReadBinaryFile(image_path, error);
     if (data.empty()) {
         SetError(error, "Failed to read image file: " + image_path);
@@ -552,8 +552,8 @@ std::string ServerVlmModel::ImageToBase64(const std::string& image_path,
 }
 
 bool ServerVlmModel::SyncRequest(const std::string& payload,
-                                  std::string* response,
-                                  std::string* error) {
+                                    std::string* response,
+                                    std::string* error) {
     std::string url = "http://" + config_.host + ":" + std::to_string(config_.port) + "/v1/chat/completions";
 
     char tmpname[] = "/tmp/vlm_payload_XXXXXX";
@@ -721,7 +721,7 @@ bool ServerVlmModel::ExtractImageBase64(
             }
             if (!m.image_bytes.empty()) {
                 std::vector<unsigned char> bytes(m.image_bytes.begin(),
-                                                 m.image_bytes.end());
+                                                m.image_bytes.end());
                 *image_b64 = Base64Encode(bytes);
                 return true;
             }

@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_SRC_CORE_CPP_VLM_CONFIG_H_
-#define VLM_SRC_CORE_CPP_VLM_CONFIG_H_
+#ifndef VLM_CONFIG_H
+#define VLM_CONFIG_H
 
 #include <string>
 
@@ -24,8 +24,8 @@ namespace vlm {
  * @note Uses yaml-cpp for YAML parsing.
  */
 bool LoadVlmConfigFromYaml(const std::string& config_path,
-                           VlmModelConfig* config,
-                           std::string* error);
+                            VlmModelConfig* config,
+                            std::string* error);
 
 /**
  * @brief Load VLM model configuration from a model directory manifest.
@@ -35,8 +35,8 @@ bool LoadVlmConfigFromYaml(const std::string& config_path,
  * @return True on success.
  */
 bool LoadVlmManifest(const std::string& model_dir,
-                     VlmModelConfig* config,
-                     std::string* error);
+                    VlmModelConfig* config,
+                    std::string* error);
 
 /**
  * @brief Validate and apply defaults to a VLM model configuration.
@@ -48,4 +48,4 @@ bool ValidateVlmModelConfig(VlmModelConfig* config, std::string* error);
 
 }  // namespace vlm
 
-#endif  // VLM_SRC_CORE_CPP_VLM_CONFIG_H_
+#endif  // VLM_CONFIG_H
