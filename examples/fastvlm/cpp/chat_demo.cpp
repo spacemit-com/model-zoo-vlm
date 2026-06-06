@@ -16,7 +16,7 @@
 namespace {
 
 std::string GetArg(int argc, char** argv, const std::string& name,
-                   const std::string& fallback) {
+                    const std::string& fallback) {
     for (int i = 1; i + 1 < argc; ++i) {
         if (argv[i] == name) return argv[i + 1];
     }

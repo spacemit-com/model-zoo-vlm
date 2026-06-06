@@ -16,7 +16,13 @@
 #include "vlm_service.h"
 #include "vlm_config.h"
 
-using namespace vlm;
+using vlm::BackendType;
+using vlm::LoadVlmConfigFromYaml;
+using vlm::ValidateVlmModelConfig;
+using vlm::VlmGenerationConfig;
+using vlm::VlmHistoryPolicy;
+using vlm::VlmMediaBackend;
+using vlm::VlmModelConfig;
 
 static std::string WriteTempYaml(const std::string& content) {
     char path[] = "/tmp/vlm_test_XXXXXX";

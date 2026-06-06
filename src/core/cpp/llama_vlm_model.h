@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_SRC_CORE_CPP_LLAMA_VLM_MODEL_H_
-#define VLM_SRC_CORE_CPP_LLAMA_VLM_MODEL_H_
+#ifndef LLAMA_VLM_MODEL_H
+#define LLAMA_VLM_MODEL_H
 
 #include <atomic>
 #include <mutex>
@@ -33,18 +33,18 @@ public:
     void Shutdown() override;
     bool IsReady() const override;
     bool Generate(const VlmInput& input,
-                  VlmResult* result,
-                  std::string* error) override;
+                    VlmResult* result,
+                    std::string* error) override;
     bool GenerateAsync(const VlmInput& input,
-                       VlmAsyncCallback callback,
-                       std::string* error) override;
+                        VlmAsyncCallback callback,
+                        std::string* error) override;
     bool GenerateStream(const VlmInput& input,
                         VlmStreamCallback callback,
                         VlmResult* result,
                         std::string* error) override;
     bool Chat(const std::vector<VlmChatMessage>& messages,
-              VlmChatResult* result,
-              std::string* error) override;
+                VlmChatResult* result,
+                std::string* error) override;
     bool ChatStream(const std::vector<VlmChatMessage>& messages,
                     VlmStreamCallback callback,
                     VlmChatResult* result,
@@ -85,4 +85,4 @@ private:
 
 }  // namespace vlm
 
-#endif  // VLM_SRC_CORE_CPP_LLAMA_VLM_MODEL_H_
+#endif  // LLAMA_VLM_MODEL_H

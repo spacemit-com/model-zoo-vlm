@@ -102,7 +102,7 @@ std::string ExpandUserPath(const std::string& path) {
 }
 
 std::string JoinModelPath(const std::string& model_dir,
-                          const std::string& model_path) {
+                            const std::string& model_path) {
     if (model_path.empty() || model_path[0] == '/') {
         return ExpandUserPath(model_path);
     }
@@ -119,8 +119,8 @@ std::string JoinModelPath(const std::string& model_dir,
 
 template <typename T>
 void AssignYamlScalar(const YAML::Node& root,
-                      const char* key,
-                      T* target) {
+                        const char* key,
+                        T* target) {
     if (!root[key] || !target) {
         return;
     }
@@ -131,8 +131,8 @@ void AssignYamlScalar(const YAML::Node& root,
 }
 
 void AssignYamlStringPath(const YAML::Node& root,
-                          const char* key,
-                          std::string* target) {
+                            const char* key,
+                            std::string* target) {
     if (!root[key] || !target) {
         return;
     }
@@ -180,8 +180,8 @@ int JsonIntAt(const nlohmann::json& json, const char* key, int default_value) {
 }  // namespace
 
 bool LoadVlmConfigFromYaml(const std::string& config_path,
-                           VlmModelConfig* config,
-                           std::string* error) {
+                            VlmModelConfig* config,
+                            std::string* error) {
     if (!config) {
         SetError(error, "Config pointer is null");
         return false;
@@ -219,7 +219,7 @@ bool LoadVlmConfigFromYaml(const std::string& config_path,
     }
     if (root["media_backend"] || root["vision_backend"]) {
         const auto& node = root["media_backend"] ? root["media_backend"] :
-                                             root["vision_backend"];
+                                            root["vision_backend"];
         config->media_backend = ParseMediaBackend(node.as<std::string>());
     }
 
@@ -256,8 +256,8 @@ bool LoadVlmConfigFromYaml(const std::string& config_path,
 }
 
 bool LoadVlmManifest(const std::string& model_dir,
-                     VlmModelConfig* config,
-                     std::string* error) {
+                    VlmModelConfig* config,
+                    std::string* error) {
     if (!config) {
         SetError(error, "Config pointer is null");
         return false;

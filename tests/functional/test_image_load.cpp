@@ -31,7 +31,7 @@ static void CheckResult(const char* name, bool condition, const char* detail = n
         ++g_passed;
     } else {
         std::fprintf(stderr, "  [FAIL] %s%s%s\n", name,
-                     detail ? " - " : "", detail ? detail : "");
+                    detail ? " - " : "", detail ? detail : "");
         ++g_failed;
     }
 }
@@ -40,7 +40,7 @@ static std::string ReadFile(const std::string& path) {
     std::ifstream ifs(path, std::ios::binary);
     if (!ifs.is_open()) return {};
     return std::string(std::istreambuf_iterator<char>(ifs),
-                       std::istreambuf_iterator<char>());
+                        std::istreambuf_iterator<char>());
 }
 
 static const char* DetectFormat(const std::string& data) {
@@ -72,7 +72,7 @@ static void TestBitmapInitRawPixels() {
         const uint32_t ny = 4;
         std::vector<unsigned char> rgb(nx * ny * 3, 128);
         std::fprintf(stderr, "  Creating %ux%u RGB bitmap (%zu bytes pixel data)\n",
-                     nx, ny, rgb.size());
+                    nx, ny, rgb.size());
 
         mtmd_bitmap* bmp = mtmd_bitmap_init(nx, ny, rgb.data());
         CheckResult("mtmd_bitmap_init(4x4) returns non-null", bmp != nullptr);
@@ -86,9 +86,9 @@ static void TestBitmapInitRawPixels() {
             const unsigned char* got_data = mtmd_bitmap_get_data(bmp);
 
             std::fprintf(stderr, "  Properties: nx=%u, ny=%u, n_bytes=%zu, is_audio=%s, id=%s\n",
-                         got_nx, got_ny, got_nbytes,
-                         got_audio ? "true" : "false",
-                         got_id ? got_id : "(null)");
+                        got_nx, got_ny, got_nbytes,
+                        got_audio ? "true" : "false",
+                        got_id ? got_id : "(null)");
 
             CheckResult("nx matches", got_nx == nx);
             CheckResult("ny matches", got_ny == ny);
@@ -124,7 +124,7 @@ static void TestBitmapInitRawPixels() {
             const unsigned char* got_data = mtmd_bitmap_get_data(bmp);
 
             std::fprintf(stderr, "  Properties: nx=%u, ny=%u, n_bytes=%zu\n",
-                         got_nx, got_ny, got_nbytes);
+                        got_nx, got_ny, got_nbytes);
 
             CheckResult("nx matches (100)", got_nx == nx);
             CheckResult("ny matches (80)", got_ny == ny);
@@ -177,7 +177,7 @@ static void TestBitmapInitRawPixels() {
             uint32_t got_ny = mtmd_bitmap_get_ny(bmp);
             size_t got_nbytes = mtmd_bitmap_get_n_bytes(bmp);
             std::fprintf(stderr, "  nx=0 bitmap created: nx=%u, ny=%u, n_bytes=%zu\n",
-                         got_nx, got_ny, got_nbytes);
+                        got_nx, got_ny, got_nbytes);
             std::fprintf(stderr, "  WARNING: mtmd_bitmap_init does NOT reject nx=0!\n");
             std::fprintf(stderr, "  Caller must validate dimensions before calling.\n");
             mtmd_bitmap_free(bmp);
@@ -240,7 +240,7 @@ static void TestHelperBitmapFromBufNullCtx(const std::vector<std::string>& image
         std::fprintf(stderr, "  Detected format: %s\n", fmt);
 
         std::fprintf(stderr, "  Calling mtmd_helper_bitmap_init_from_buf(NULL, data, %zu)...\n",
-                     data.size());
+                    data.size());
 
         mtmd_bitmap* bmp = mtmd_helper_bitmap_init_from_buf(
             nullptr,
@@ -255,10 +255,10 @@ static void TestHelperBitmapFromBufNullCtx(const std::vector<std::string>& image
             const char* id = mtmd_bitmap_get_id(bmp);
 
             std::fprintf(stderr, "  SUCCESS: Bitmap decoded! nx=%u, ny=%u, n_bytes=%zu, "
-                                 "is_audio=%s, id=%s\n",
-                         nx, ny, n_bytes,
-                         is_audio ? "true" : "false",
-                         id ? id : "(null)");
+                                "is_audio=%s, id=%s\n",
+                        nx, ny, n_bytes,
+                        is_audio ? "true" : "false",
+                        id ? id : "(null)");
 
             if (nx > 0 && ny > 0 && n_bytes > 0) {
                 double bpp = static_cast<double>(n_bytes) / (nx * ny);
@@ -294,7 +294,7 @@ static void TestHelperBitmapFromFileNullCtx(const std::vector<std::string>& imag
     for (const auto& path : image_paths) {
         std::fprintf(stderr, "  --- File: %s ---\n", path.c_str());
         std::fprintf(stderr, "  Calling mtmd_helper_bitmap_init_from_file(NULL, \"%s\")...\n",
-                     path.c_str());
+                    path.c_str());
 
         mtmd_bitmap* bmp = mtmd_helper_bitmap_init_from_file(nullptr, path.c_str());
 
@@ -340,7 +340,7 @@ static void TestViaLlamaServer(const std::string& model_dir, const std::string& 
         text_model = model_dir + "/fastvlm-text-0.5B-Q4_1.gguf";
         vision_model = model_dir + "/fastvlm_vision.f16.onnx";
     } else if (config.find("Qwen3.5") != std::string::npos ||
-               config.find("qwen3_5") != std::string::npos) {
+                config.find("qwen3_5") != std::string::npos) {
         text_model = model_dir + "/qwen3_5_2b-text-q41.gguf";
         vision_model = model_dir + "/qwen3_5_2b-vision-224-op23.f16.onnx";
     }
@@ -369,7 +369,7 @@ static void TestViaLlamaServer(const std::string& model_dir, const std::string& 
     std::fprintf(stderr, "\n  To run the full end-to-end test manually:\n");
     std::fprintf(stderr, "  1. Start llama-server:\n");
     std::fprintf(stderr, "     llama-server -m %s --mmproj %s --media-backend %s -ngl 0 -c 4096 --port 8888 &\n",
-                 text_model.c_str(), vision_model.c_str(), backend.c_str());
+                text_model.c_str(), vision_model.c_str(), backend.c_str());
     std::fprintf(stderr, "  2. Send request with image:\n");
     std::fprintf(stderr, "     curl -s http://localhost:8888/v1/chat/completions \\\n");
     std::fprintf(stderr, "       -H 'Content-Type: application/json' \\\n");
@@ -426,10 +426,10 @@ int main(int argc, char** argv) {
     std::fprintf(stderr, "  Image files: %zu\n", image_paths.size());
     std::fprintf(stderr, "  Model dir: %s\n", model_dir.empty() ? "(none)" : model_dir.c_str());
     std::fprintf(stderr, "  Phases: %s%s%s%s\n",
-                 run_phase1 ? "1 " : "",
-                 run_phase2 ? "2 " : "",
-                 run_phase3 ? "3 " : "",
-                 run_phase4 ? "4 " : "");
+                run_phase1 ? "1 " : "",
+                run_phase2 ? "2 " : "",
+                run_phase3 ? "3 " : "",
+                run_phase4 ? "4 " : "");
 
     if (run_phase1) TestBitmapInitRawPixels();
     if (run_phase2) TestHelperBitmapFromBufNullCtx(image_paths);

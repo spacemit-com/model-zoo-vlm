@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_VLM_SERVICE_H_
-#define VLM_VLM_SERVICE_H_
+#ifndef VLM_SERVICE_H
+#define VLM_SERVICE_H
 
 #include <cstdint>
 #include <functional>
@@ -133,8 +133,8 @@ struct VlmChatResult {
 };
 
 using VlmStreamCallback = std::function<bool(const std::string& chunk,
-                                             bool is_done,
-                                             const std::string& error)>;
+                                            bool is_done,
+                                            const std::string& error)>;
 
 using VlmAsyncCallback = std::function<void(const VlmResult& result,
                                             const std::string& error)>;
@@ -163,13 +163,13 @@ public:
 
     // Synchronous single-turn text or image+text generation.
     virtual bool Generate(const VlmInput& input,
-                          VlmResult* result,
-                          std::string* error) = 0;
+                            VlmResult* result,
+                            std::string* error) = 0;
 
     // Asynchronous completion callback API. Implementations may dispatch internally.
     virtual bool GenerateAsync(const VlmInput& input,
-                               VlmAsyncCallback callback,
-                               std::string* error) = 0;
+                                VlmAsyncCallback callback,
+                                std::string* error) = 0;
 
     // Streaming single-turn generation. Callback returns false to stop receiving chunks.
     virtual bool GenerateStream(const VlmInput& input,
@@ -179,8 +179,8 @@ public:
 
     // Multi-turn chat. User messages may include image_path or image_bytes.
     virtual bool Chat(const std::vector<VlmChatMessage>& messages,
-                      VlmChatResult* result,
-                      std::string* error) = 0;
+                        VlmChatResult* result,
+                        std::string* error) = 0;
 
     // Streaming multi-turn chat. Final metrics are written to result when available.
     virtual bool ChatStream(const std::vector<VlmChatMessage>& messages,
@@ -201,7 +201,7 @@ public:
 };
 
 std::unique_ptr<VlmService> CreateVlmService(const VlmModelConfig& config,
-                                             std::string* error);
+                                            std::string* error);
 
 std::unique_ptr<VlmService> CreateVlmServiceFromConfig(
     const std::string& config_path,
@@ -209,4 +209,4 @@ std::unique_ptr<VlmService> CreateVlmServiceFromConfig(
 
 }  // namespace vlm
 
-#endif  // VLM_VLM_SERVICE_H_
+#endif  // VLM_SERVICE_H

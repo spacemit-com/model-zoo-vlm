@@ -59,8 +59,8 @@ std::string Base64Encode(const std::vector<unsigned char>& data) {
     size_t i = 0;
     for (; i + 2 < data.size(); i += 3) {
         uint32_t triple = (static_cast<uint32_t>(data[i]) << 16) |
-                          (static_cast<uint32_t>(data[i + 1]) << 8) |
-                          static_cast<uint32_t>(data[i + 2]);
+                            (static_cast<uint32_t>(data[i + 1]) << 8) |
+                            static_cast<uint32_t>(data[i + 2]);
         result += kTable[(triple >> 18) & 0x3F];
         result += kTable[(triple >> 12) & 0x3F];
         result += kTable[(triple >> 6) & 0x3F];
@@ -116,7 +116,7 @@ std::string ReadBinaryFile(const std::string& path, std::string* error) {
 }
 
 std::string ExtractJsonString(const std::string& json,
-                              const std::string& key) {
+                                const std::string& key) {
     std::string needle = "\"" + key + "\"";
     size_t pos = json.find(needle);
     if (pos == std::string::npos) {
@@ -129,7 +129,7 @@ std::string ExtractJsonString(const std::string& json,
     }
     ++pos;
     while (pos < json.size() && (json[pos] == ' ' || json[pos] == '\t' ||
-           json[pos] == '\n' || json[pos] == '\r')) {
+            json[pos] == '\n' || json[pos] == '\r')) {
         ++pos;
     }
     if (pos >= json.size() || json[pos] != '"') {
@@ -169,7 +169,7 @@ int ExtractJsonInt(const std::string& json, const std::string& key) {
     }
     ++pos;
     while (pos < json.size() && (json[pos] == ' ' || json[pos] == '\t' ||
-           json[pos] == '\n' || json[pos] == '\r')) {
+            json[pos] == '\n' || json[pos] == '\r')) {
         ++pos;
     }
     bool negative = false;

@@ -1,6 +1,5 @@
 """Functional tests for VLM service Python bindings."""
 
-import os
 import sys
 import tempfile
 import unittest
@@ -32,7 +31,7 @@ class TestVlmServiceLifecycle(unittest.TestCase):
     def test_context_manager_with_invalid_config(self):
         """Context manager should handle invalid config gracefully."""
         with self.assertRaises(RuntimeError):
-            with VlmService("/nonexistent/config.yaml") as svc:
+            with VlmService("/nonexistent/config.yaml"):
                 pass
 
     def test_close_destroys_handle_once(self):

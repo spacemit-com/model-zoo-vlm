@@ -26,7 +26,7 @@ static void Check(const char* name, bool condition, const char* detail = nullptr
         ++g_passed;
     } else {
         std::fprintf(stderr, "  [FAIL] %s%s%s\n", name,
-                     detail ? " - " : "", detail ? detail : "");
+                    detail ? " - " : "", detail ? detail : "");
         ++g_failed;
     }
 }
@@ -60,28 +60,28 @@ static void TestBuildCommand() {
     std::fprintf(stderr, "  Generated command:\n  %s\n\n", cmd.c_str());
 
     Check("command contains 'taskset -c' and '0-7'",
-          cmd.find("taskset -c") != std::string::npos &&
-          cmd.find("0-7") != std::string::npos);
+            cmd.find("taskset -c") != std::string::npos &&
+            cmd.find("0-7") != std::string::npos);
     Check("command contains 'OMP_NUM_THREADS=8' before 'taskset'",
-          cmd.find("OMP_NUM_THREADS=8") < cmd.find("taskset"));
+            cmd.find("OMP_NUM_THREADS=8") < cmd.find("taskset"));
     Check("command contains 'llama-server'",
-          cmd.find("llama-server") != std::string::npos);
+            cmd.find("llama-server") != std::string::npos);
     Check("command contains '--vision-backend smt'",
-          cmd.find("--vision-backend smt") != std::string::npos);
+            cmd.find("--vision-backend smt") != std::string::npos);
     Check("command contains '--smt-config-dir'",
-          cmd.find("--smt-config-dir") != std::string::npos);
+            cmd.find("--smt-config-dir") != std::string::npos);
     Check("command contains '--media-path'",
-          cmd.find("--media-path") != std::string::npos);
+            cmd.find("--media-path") != std::string::npos);
     Check("command contains '-ngl 0'",
-          cmd.find("-ngl 0") != std::string::npos);
+            cmd.find("-ngl 0") != std::string::npos);
     Check("command contains '--no-warmup'",
-          cmd.find("--no-warmup") != std::string::npos);
+            cmd.find("--no-warmup") != std::string::npos);
     Check("command contains '--reasoning off'",
-          cmd.find("--reasoning off") != std::string::npos);
+            cmd.find("--reasoning off") != std::string::npos);
     Check("command contains '-tb 8'",
-          cmd.find("-tb 8") != std::string::npos);
+            cmd.find("-tb 8") != std::string::npos);
     Check("command contains '--ctx-size 4096'",
-          cmd.find("--ctx-size 4096") != std::string::npos);
+            cmd.find("--ctx-size 4096") != std::string::npos);
 }
 
 /**
@@ -112,20 +112,20 @@ static void TestBuildCommandMtmd() {
     std::fprintf(stderr, "  Generated command:\n  %s\n\n", cmd.c_str());
 
     Check("command contains '--vision-backend mtmd'",
-          cmd.find("--vision-backend mtmd") != std::string::npos);
+            cmd.find("--vision-backend mtmd") != std::string::npos);
     Check("command contains '--mmproj'",
-          cmd.find("--mmproj") != std::string::npos);
+            cmd.find("--mmproj") != std::string::npos);
     Check("command does NOT contain '--smt-config-dir'",
-          cmd.find("--smt-config-dir") == std::string::npos);
+            cmd.find("--smt-config-dir") == std::string::npos);
     Check("command contains '--reasoning on'",
-          cmd.find("--reasoning on") != std::string::npos);
+            cmd.find("--reasoning on") != std::string::npos);
     Check("command contains '--reasoning-budget 512'",
-          cmd.find("--reasoning-budget 512") != std::string::npos);
+            cmd.find("--reasoning-budget 512") != std::string::npos);
     Check("command does NOT contain '--no-warmup'",
-          cmd.find("--no-warmup") == std::string::npos);
+            cmd.find("--no-warmup") == std::string::npos);
     Check("command contains 'taskset -c' and '0-3'",
-          cmd.find("taskset -c") != std::string::npos &&
-          cmd.find("0-3") != std::string::npos);
+            cmd.find("taskset -c") != std::string::npos &&
+            cmd.find("0-3") != std::string::npos);
 }
 
 /**
@@ -153,25 +153,25 @@ static void TestBuildPayload() {
     std::fprintf(stderr, "  Payload (truncated):\n  %.200s...\n\n", payload.c_str());
 
     Check("payload contains '\"messages\":'",
-          payload.find("\"messages\":") != std::string::npos);
+            payload.find("\"messages\":") != std::string::npos);
     Check("payload contains '\"role\":\"user\"'",
-          payload.find("\"role\":\"user\"") != std::string::npos);
+            payload.find("\"role\":\"user\"") != std::string::npos);
     Check("payload contains '\"type\":\"text\"'",
-          payload.find("\"type\":\"text\"") != std::string::npos);
+            payload.find("\"type\":\"text\"") != std::string::npos);
     Check("payload contains '\"type\":\"image_url\"'",
-          payload.find("\"type\":\"image_url\"") != std::string::npos);
+            payload.find("\"type\":\"image_url\"") != std::string::npos);
     Check("payload contains 'data:image/jpeg;base64,'",
-          payload.find("data:image/jpeg;base64,") != std::string::npos);
+            payload.find("data:image/jpeg;base64,") != std::string::npos);
     Check("payload contains '\"max_tokens\":150'",
-          payload.find("\"max_tokens\":150") != std::string::npos);
+            payload.find("\"max_tokens\":150") != std::string::npos);
     Check("payload contains '\"temperature\":0.2'",
-          payload.find("\"temperature\":0.2") != std::string::npos);
+            payload.find("\"temperature\":0.2") != std::string::npos);
     Check("payload contains '\"vision_history\":'",
-          payload.find("\"vision_history\":") != std::string::npos);
+            payload.find("\"vision_history\":") != std::string::npos);
     Check("payload contains '\"stop\":'",
-          payload.find("\"stop\":") != std::string::npos);
+            payload.find("\"stop\":") != std::string::npos);
     Check("payload contains '\"stream\":false'",
-          payload.find("\"stream\":false") != std::string::npos);
+            payload.find("\"stream\":false") != std::string::npos);
 }
 
 /**
@@ -183,17 +183,17 @@ static void TestConfigDefaults() {
 
     vlm::VlmModelConfig config;
     Check("default media_backend is kSmt",
-          config.media_backend == vlm::VlmMediaBackend::kSmt);
+            config.media_backend == vlm::VlmMediaBackend::kSmt);
     Check("default n_gpu_layers is 0",
-          config.n_gpu_layers == 0);
+            config.n_gpu_layers == 0);
     Check("default no_warmup is true",
-          config.no_warmup == true);
+            config.no_warmup == true);
     Check("default smt_config_dir is empty",
-          config.smt_config_dir.empty());
+            config.smt_config_dir.empty());
     Check("default media_path is empty",
-          config.media_path.empty());
+            config.media_path.empty());
     Check("default cpu_affinity is empty",
-          config.cpu_affinity.empty());
+            config.cpu_affinity.empty());
 }
 
 int main() {
@@ -208,7 +208,7 @@ int main() {
 
     std::fprintf(stderr, "\n========================================\n");
     std::fprintf(stderr, "  Summary: %d passed, %d failed\n",
-                 g_passed, g_failed);
+                g_passed, g_failed);
     std::fprintf(stderr, "========================================\n");
 
     return g_failed > 0 ? 1 : 0;

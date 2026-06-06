@@ -10,8 +10,6 @@
 
 set -euo pipefail
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-PROJECT_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
 CACHE_DIR="${VLM_CACHE_DIR:-$HOME/.cache/models/vlm}"
 
 BASE_URL="https://archive.spacemit.com/spacemit-ai/model_zoo/vlm"

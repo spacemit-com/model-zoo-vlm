@@ -47,7 +47,7 @@ def main() -> None:
     args = parse_args()
 
     with VlmService(args.config) as service:
-        print(f"Streaming output:")
+        print("Streaming output:")
 
         t_start = time.monotonic()
         chunk_count = 0
@@ -61,7 +61,7 @@ def main() -> None:
         elapsed = (time.monotonic() - t_start) * 1000.0
 
         print(f"\n\n{'='*50}")
-        print(f"  Streaming Statistics")
+        print("  Streaming Statistics")
         print(f"{'='*50}")
         print(f"  Chunks received: {chunk_count}")
         print(f"  Wall time:       {elapsed:.2f} ms")

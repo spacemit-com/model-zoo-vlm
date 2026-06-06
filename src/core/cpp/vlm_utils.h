@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_SRC_CORE_CPP_VLM_UTILS_H_
-#define VLM_SRC_CORE_CPP_VLM_UTILS_H_
+#ifndef VLM_UTILS_H
+#define VLM_UTILS_H
 
 #include <cstdint>
 #include <string>
@@ -28,7 +28,7 @@ std::string ReadFileToString(const std::string& path, std::string* error);
 std::string ReadBinaryFile(const std::string& path, std::string* error);
 
 std::string ExtractJsonString(const std::string& json,
-                              const std::string& key);
+                                const std::string& key);
 
 int ExtractJsonInt(const std::string& json, const std::string& key);
 
@@ -37,4 +37,4 @@ std::string StripThinkingBlocks(const std::string& text,
 
 }  // namespace vlm
 
-#endif  // VLM_SRC_CORE_CPP_VLM_UTILS_H_
+#endif  // VLM_UTILS_H

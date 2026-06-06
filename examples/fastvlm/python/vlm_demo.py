@@ -48,7 +48,7 @@ def main() -> int:
                 result = service.generate(args.prompt)
 
             print(f"\n{'='*50}")
-            print(f"  VLM Generation Result")
+            print("  VLM Generation Result")
             print(f"{'='*50}")
             print(f"  Text:     {result['text']}")
             if result.get("reasoning_text"):
@@ -61,7 +61,7 @@ def main() -> int:
 
             metrics = service.get_metrics()
             if metrics.get("total_requests", 0) > 0:
-                print(f"\n  Service Metrics:")
+                print("\n  Service Metrics:")
                 print(f"  Total requests: {metrics['total_requests']}")
                 print(f"  Last speed:    {metrics['last_tokens_per_second']:.2f} tok/s")
 

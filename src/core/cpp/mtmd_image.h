@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_SRC_CORE_CPP_MTMD_IMAGE_H_
-#define VLM_SRC_CORE_CPP_MTMD_IMAGE_H_
+#ifndef MTMD_IMAGE_H
+#define MTMD_IMAGE_H
 
 #include <cstdint>
 #include <memory>
@@ -24,10 +24,10 @@ using MtmdBitmapPtr = std::unique_ptr<mtmd_bitmap, void (*)(mtmd_bitmap*)>;
 MtmdBitmapPtr MakeNullBitmap();
 
 MtmdBitmapPtr LoadBitmapFromInput(mtmd_context* ctx,
-                                  const std::string& image_path,
-                                  const std::vector<uint8_t>& image_bytes,
-                                  std::string* error);
+                                    const std::string& image_path,
+                                    const std::vector<uint8_t>& image_bytes,
+                                    std::string* error);
 
 }  // namespace vlm
 
-#endif  // VLM_SRC_CORE_CPP_MTMD_IMAGE_H_
+#endif  // MTMD_IMAGE_H

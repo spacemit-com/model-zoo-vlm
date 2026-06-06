@@ -14,7 +14,6 @@ import logging
 import os
 import subprocess
 import time
-from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
 import yaml
@@ -318,7 +317,11 @@ class VlmService:
         content = message.get("content", "")
         reasoning = message.get("reasoning_content", "")
         completion_tokens = usage.get("completion_tokens", 0)
-        tokens_per_second = completion_tokens / (latency_ms / 1000.0) if latency_ms > 0 and completion_tokens > 0 else 0.0
+        tokens_per_second = (
+            completion_tokens / (latency_ms / 1000.0)
+            if latency_ms > 0 and completion_tokens > 0
+            else 0.0
+        )
 
         return {
             "text": content,
@@ -390,7 +393,11 @@ class VlmService:
         content = message.get("content", "")
         reasoning = message.get("reasoning_content", "")
         completion_tokens = usage.get("completion_tokens", 0)
-        tokens_per_second = completion_tokens / (latency_ms / 1000.0) if latency_ms > 0 and completion_tokens > 0 else 0.0
+        tokens_per_second = (
+            completion_tokens / (latency_ms / 1000.0)
+            if latency_ms > 0 and completion_tokens > 0
+            else 0.0
+        )
 
         return {
             "text": content,
