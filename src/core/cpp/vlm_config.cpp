@@ -10,8 +10,13 @@
 #include "vlm_utils.h"
 
 #include <algorithm>
+#include <charconv>
 #include <cstdlib>
+#include <filesystem>
+#include <iostream>
 #include <sstream>
+#include <string_view>
+#include <system_error>
 
 #include <nlohmann/json.hpp>
 #include <yaml-cpp/yaml.h>
@@ -86,6 +91,60 @@ VlmMediaBackend ParseMediaBackend(const std::string& backend_str) {
     if (lower == "smt") return VlmMediaBackend::kSmt;
     if (lower == "mtmd") return VlmMediaBackend::kMtmd;
     return VlmMediaBackend::kAuto;
+}
+
+/**
+ * @brief Number of AI cores available for inference threads.
+ *
+ * Uses SPACEMIT_EP_MAX_THREADS if set to a positive integer, otherwise counts
+ * the per-core TCM nodes under /proc/device-tree/soc/tcm*.
+ * @return The core count, or 0 when it cannot be determined.
+ */
+int DetectAiCoreCount() {
+    if (const char* env = std::getenv("SPACEMIT_EP_MAX_THREADS")) {
+        const std::string_view value(env);
+        int max_threads = 0;
+        const auto parsed = std::from_chars(
+            value.data(), value.data() + value.size(), max_threads);
+        if (parsed.ec == std::errc{} &&
+            parsed.ptr == value.data() + value.size() && max_threads > 0) {
+            return max_threads;
+        }
+    }
+    namespace fs = std::filesystem;
+    int count = 0;
+    std::error_code ec;
+    const fs::path soc("/proc/device-tree/soc");
+    if (!fs::is_directory(soc, ec)) {
+        return 0;
+    }
+    for (const auto& tcm : fs::directory_iterator(soc, ec)) {
+        if (tcm.path().filename().string().rfind("tcm", 0) != 0 || !tcm.is_directory(ec)) {
+            continue;
+        }
+        for (const auto& node : fs::directory_iterator(tcm.path(), ec)) {
+            if (node.is_directory(ec) &&
+                node.path().filename().string().find("_tcm") != std::string::npos) {
+                ++count;
+            }
+        }
+    }
+    return count;
+}
+
+/**
+ * @brief Clamp a thread count to the available AI cores.
+ * @param name Config key used in the log message.
+ * @param threads Thread count to clamp in place.
+ */
+void ClampThreadsToAiCores(const char* name, int* threads) {
+    static const int max_threads = DetectAiCoreCount();
+    if (max_threads > 0 && *threads > max_threads) {
+        std::cerr << "[vlm] generation." << name << " " << *threads
+                  << " exceeds available AI cores " << max_threads
+                  << ", using " << max_threads << std::endl;
+        *threads = max_threads;
+    }
 }
 
 std::string ExpandUserPath(const std::string& path) {
@@ -413,6 +472,9 @@ bool ValidateVlmModelConfig(VlmModelConfig* config, std::string* error) {
     if (config->generation.batch_threads <= 0) {
         config->generation.batch_threads = config->generation.threads;
     }
+
+    ClampThreadsToAiCores("threads", &config->generation.threads);
+    ClampThreadsToAiCores("batch_threads", &config->generation.batch_threads);
 
     if (config->generation.reasoning_budget <= 0) {
         config->generation.reasoning_budget = 1024;

@@ -11,6 +11,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <type_traits>
 #include <mtmd.h>
 #include <mtmd-helper.h>
 
@@ -27,6 +28,30 @@ void LogInfo(const char* fmt, ...) {
     std::vfprintf(stderr, fmt, args);
     std::fprintf(stderr, "\n");
     va_end(args);
+}
+
+template <typename Decoder>
+mtmd_bitmap* DecodeBitmap(Decoder decode, mtmd_context* ctx,
+                          const unsigned char* data, size_t size) {
+    if constexpr (std::is_invocable_v<Decoder, mtmd_context*,
+                                      const unsigned char*, size_t, bool>) {
+        // New helpers return a wrapper and accept a placeholder flag. Image
+        // inference needs decoded pixels, so placeholders must stay disabled.
+        auto decoded = decode(ctx, data, size, false);
+        if (decoded.video_ctx) {
+            // This API returns one bitmap, not a video stream. Release both
+            // wrapper resources instead of leaking an unsupported video input.
+            if (decoded.bitmap) {
+                mtmd_bitmap_free(decoded.bitmap);
+            }
+            mtmd_helper_video_free(decoded.video_ctx);
+            return nullptr;
+        }
+        return decoded.bitmap;
+    } else {
+        // Preserve runtimes whose helper directly returns an owned bitmap.
+        return decode(ctx, data, size);
+    }
 }
 
 }  // namespace
@@ -85,7 +110,7 @@ MtmdBitmapPtr LoadBitmapFromInput(mtmd_context* ctx,
 
         LogInfo("Calling mtmd_helper_bitmap_init_from_buf(ctx=%p, data, %zu)",
                 static_cast<const void*>(ctx), file_data.size());
-        mtmd_bitmap* bitmap = mtmd_helper_bitmap_init_from_buf(
+        mtmd_bitmap* bitmap = DecodeBitmap(mtmd_helper_bitmap_init_from_buf,
             ctx,
             reinterpret_cast<const unsigned char*>(file_data.data()),
             file_data.size());
@@ -148,7 +173,7 @@ MtmdBitmapPtr LoadBitmapFromInput(mtmd_context* ctx,
 
         LogInfo("Calling mtmd_helper_bitmap_init_from_buf(ctx=%p, data, %zu)",
                 static_cast<const void*>(ctx), image_bytes.size());
-        mtmd_bitmap* bitmap = mtmd_helper_bitmap_init_from_buf(
+        mtmd_bitmap* bitmap = DecodeBitmap(mtmd_helper_bitmap_init_from_buf,
             ctx, image_bytes.data(), image_bytes.size());
 
         if (!bitmap) {

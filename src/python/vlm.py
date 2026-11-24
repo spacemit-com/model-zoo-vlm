@@ -28,6 +28,37 @@ def _expand_user(path: str) -> str:
     return path
 
 
+def _detect_ai_core_count() -> int:
+    """Return the number of AI cores available for inference threads.
+
+    Uses SPACEMIT_EP_MAX_THREADS if set to a positive integer, otherwise
+    counts the per-core TCM nodes under /proc/device-tree/soc/tcm*.
+    Returns 0 when the limit cannot be determined.
+    """
+    env = os.environ.get("SPACEMIT_EP_MAX_THREADS", "")
+    if env.isascii() and env.isdecimal():
+        try:
+            max_threads = int(env)
+        except ValueError:
+            pass
+        else:
+            if 0 < max_threads <= 2147483647:
+                return max_threads
+    soc = "/proc/device-tree/soc"
+    count = 0
+    try:
+        for tcm in os.listdir(soc):
+            tcm_path = os.path.join(soc, tcm)
+            if not tcm.startswith("tcm") or not os.path.isdir(tcm_path):
+                continue
+            for node in os.listdir(tcm_path):
+                if "_tcm" in node and os.path.isdir(os.path.join(tcm_path, node)):
+                    count += 1
+    except OSError:
+        return 0
+    return count
+
+
 class VlmService:
     """High-level Python wrapper around a VLM llama-server HTTP endpoint.
 
@@ -88,6 +119,13 @@ class VlmService:
         gen.setdefault("enable_thinking", False)
         gen.setdefault("reasoning_budget", -1)
         gen.setdefault("history_policy", "last")
+
+        max_threads = _detect_ai_core_count()
+        for key in ("threads", "batch_threads"):
+            if max_threads > 0 and gen[key] > max_threads:
+                logger.warning("generation.%s %d exceeds available AI cores %d, using %d",
+                               key, gen[key], max_threads, max_threads)
+                gen[key] = max_threads
 
         if model_dir:
             manifest_path = os.path.join(model_dir, "config.json")
