@@ -9,9 +9,17 @@
 #include "vlm_config.h"
 #include "vlm_utils.h"
 
+#include <dirent.h>
+#include <sys/stat.h>
+
 #include <algorithm>
+#include <charconv>
 #include <cstdlib>
+#include <iostream>
+#include <memory>
 #include <sstream>
+#include <string_view>
+#include <system_error>
 
 #include <nlohmann/json.hpp>
 #include <yaml-cpp/yaml.h>
@@ -86,6 +94,71 @@ VlmMediaBackend ParseMediaBackend(const std::string& backend_str) {
     if (lower == "smt") return VlmMediaBackend::kSmt;
     if (lower == "mtmd") return VlmMediaBackend::kMtmd;
     return VlmMediaBackend::kAuto;
+}
+
+/**
+ * @brief Number of AI cores available for inference threads.
+ *
+ * Uses SPACEMIT_EP_MAX_THREADS if set to a positive integer, otherwise counts
+ * the per-core TCM nodes under /proc/device-tree/soc/tcm*.
+ * @return The core count, or 0 when it cannot be determined.
+ */
+int DetectAiCoreCount() {
+    if (const char* env = std::getenv("SPACEMIT_EP_MAX_THREADS")) {
+        const std::string_view value(env);
+        int max_threads = 0;
+        const auto parsed = std::from_chars(
+            value.data(), value.data() + value.size(), max_threads);
+        if (parsed.ec == std::errc{} &&
+            parsed.ptr == value.data() + value.size() && max_threads > 0) {
+            return max_threads;
+        }
+    }
+    using DirectoryPtr = std::unique_ptr<DIR, int (*)(DIR*)>;
+    const std::string soc_path = "/proc/device-tree/soc";
+    DirectoryPtr soc(opendir(soc_path.c_str()), closedir);
+    if (!soc) {
+        return 0;
+    }
+    int count = 0;
+    while (const dirent* entry = readdir(soc.get())) {
+        const std::string name(entry->d_name);
+        if (name.rfind("tcm", 0) != 0) {
+            continue;
+        }
+        const std::string tcm_path = soc_path + "/" + name;
+        DirectoryPtr tcm(opendir(tcm_path.c_str()), closedir);
+        if (!tcm) {
+            continue;
+        }
+        while (const dirent* node = readdir(tcm.get())) {
+            const std::string node_name(node->d_name);
+            if (node_name.find("_tcm") == std::string::npos) {
+                continue;
+            }
+            const std::string node_path = tcm_path + "/" + node_name;
+            struct stat node_stat {};
+            if (stat(node_path.c_str(), &node_stat) == 0 && S_ISDIR(node_stat.st_mode)) {
+                ++count;
+            }
+        }
+    }
+    return count;
+}
+
+/**
+ * @brief Clamp a thread count to the available AI cores.
+ * @param name Config key used in the log message.
+ * @param threads Thread count to clamp in place.
+ */
+void ClampThreadsToAiCores(const char* name, int* threads) {
+    static const int max_threads = DetectAiCoreCount();
+    if (max_threads > 0 && *threads > max_threads) {
+        std::cerr << "[vlm] generation." << name << " " << *threads
+                    << " exceeds available AI cores " << max_threads
+                    << ", using " << max_threads << std::endl;
+        *threads = max_threads;
+    }
 }
 
 std::string ExpandUserPath(const std::string& path) {
@@ -413,6 +486,9 @@ bool ValidateVlmModelConfig(VlmModelConfig* config, std::string* error) {
     if (config->generation.batch_threads <= 0) {
         config->generation.batch_threads = config->generation.threads;
     }
+
+    ClampThreadsToAiCores("threads", &config->generation.threads);
+    ClampThreadsToAiCores("batch_threads", &config->generation.batch_threads);
 
     if (config->generation.reasoning_budget <= 0) {
         config->generation.reasoning_budget = 1024;
