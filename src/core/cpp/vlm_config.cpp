@@ -9,11 +9,14 @@
 #include "vlm_config.h"
 #include "vlm_utils.h"
 
+#include <dirent.h>
+#include <sys/stat.h>
+
 #include <algorithm>
 #include <charconv>
 #include <cstdlib>
-#include <filesystem>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string_view>
 #include <system_error>
@@ -111,20 +114,31 @@ int DetectAiCoreCount() {
             return max_threads;
         }
     }
-    namespace fs = std::filesystem;
-    int count = 0;
-    std::error_code ec;
-    const fs::path soc("/proc/device-tree/soc");
-    if (!fs::is_directory(soc, ec)) {
+    using DirectoryPtr = std::unique_ptr<DIR, int (*)(DIR*)>;
+    const std::string soc_path = "/proc/device-tree/soc";
+    DirectoryPtr soc(opendir(soc_path.c_str()), closedir);
+    if (!soc) {
         return 0;
     }
-    for (const auto& tcm : fs::directory_iterator(soc, ec)) {
-        if (tcm.path().filename().string().rfind("tcm", 0) != 0 || !tcm.is_directory(ec)) {
+    int count = 0;
+    while (const dirent* entry = readdir(soc.get())) {
+        const std::string name(entry->d_name);
+        if (name.rfind("tcm", 0) != 0) {
             continue;
         }
-        for (const auto& node : fs::directory_iterator(tcm.path(), ec)) {
-            if (node.is_directory(ec) &&
-                node.path().filename().string().find("_tcm") != std::string::npos) {
+        const std::string tcm_path = soc_path + "/" + name;
+        DirectoryPtr tcm(opendir(tcm_path.c_str()), closedir);
+        if (!tcm) {
+            continue;
+        }
+        while (const dirent* node = readdir(tcm.get())) {
+            const std::string node_name(node->d_name);
+            if (node_name.find("_tcm") == std::string::npos) {
+                continue;
+            }
+            const std::string node_path = tcm_path + "/" + node_name;
+            struct stat node_stat {};
+            if (stat(node_path.c_str(), &node_stat) == 0 && S_ISDIR(node_stat.st_mode)) {
                 ++count;
             }
         }
@@ -141,8 +155,8 @@ void ClampThreadsToAiCores(const char* name, int* threads) {
     static const int max_threads = DetectAiCoreCount();
     if (max_threads > 0 && *threads > max_threads) {
         std::cerr << "[vlm] generation." << name << " " << *threads
-                  << " exceeds available AI cores " << max_threads
-                  << ", using " << max_threads << std::endl;
+                    << " exceeds available AI cores " << max_threads
+                    << ", using " << max_threads << std::endl;
         *threads = max_threads;
     }
 }

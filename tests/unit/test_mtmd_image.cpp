@@ -51,7 +51,7 @@ std::string WriteInput(const std::vector<uint8_t>& data) {
     int fd = mkstemp(path);
     Check(fd >= 0, "create input file");
     Check(write(fd, data.data(), data.size()) == static_cast<ssize_t>(data.size()),
-          "write input file");
+            "write input file");
     Check(close(fd) == 0, "close input file");
     return path;
 }
@@ -118,7 +118,7 @@ void TestVideoCleanup() {
         Check(!error.empty(), "video error");
         Check(video_free_count == 1, "release video exactly once");
         Check(bitmap_free_count == (result == DecodeResult::kVideoAndImage ? 1 : 0),
-              "release any accompanying bitmap");
+                "release any accompanying bitmap");
     }
 }
 #endif

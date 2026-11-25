@@ -32,9 +32,9 @@ void LogInfo(const char* fmt, ...) {
 
 template <typename Decoder>
 mtmd_bitmap* DecodeBitmap(Decoder decode, mtmd_context* ctx,
-                          const unsigned char* data, size_t size) {
+                            const unsigned char* data, size_t size) {
     if constexpr (std::is_invocable_v<Decoder, mtmd_context*,
-                                      const unsigned char*, size_t, bool>) {
+                    const unsigned char*, size_t, bool>) {
         // New helpers return a wrapper and accept a placeholder flag. Image
         // inference needs decoded pixels, so placeholders must stay disabled.
         auto decoded = decode(ctx, data, size, false);

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_TEST_MTMD_H_
-#define VLM_TEST_MTMD_H_
+#ifndef MTMD_H
+#define MTMD_H
 
 #include <cstddef>
 #include <cstdint>
@@ -20,4 +20,4 @@ size_t mtmd_bitmap_get_n_bytes(const mtmd_bitmap* bitmap);
 bool mtmd_bitmap_is_audio(const mtmd_bitmap* bitmap);
 const char* mtmd_bitmap_get_id(const mtmd_bitmap* bitmap);
 
-#endif  // VLM_TEST_MTMD_H_
+#endif  // MTMD_H

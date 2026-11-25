@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef VLM_TEST_MTMD_HELPER_H_
-#define VLM_TEST_MTMD_HELPER_H_
+#ifndef MTMD_HELPER_H
+#define MTMD_HELPER_H
 
 #include "mtmd.h"
 
@@ -24,4 +24,4 @@ mtmd_helper_bitmap_wrapper mtmd_helper_bitmap_init_from_buf(
 void mtmd_helper_video_free(mtmd_helper_video* video);
 #endif
 
-#endif  // VLM_TEST_MTMD_HELPER_H_
+#endif  // MTMD_HELPER_H
