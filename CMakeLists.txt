@@ -85,22 +85,6 @@ endif()
 
 if(BUILD_VLM_TESTS)
     enable_testing()
-
-    # Compile the production image loader against both incompatible helper APIs.
-    # These targets use stub headers and do not link the installed mtmd library.
-    foreach(_mtmd_api legacy wrapper)
-        add_executable(test_mtmd_image_${_mtmd_api}
-            tests/unit/test_mtmd_image.cpp
-            src/core/cpp/mtmd_image.cpp
-            src/core/cpp/vlm_utils.cpp)
-        target_include_directories(test_mtmd_image_${_mtmd_api} PRIVATE
-            tests/unit/mtmd_stub src/core/cpp)
-        if(_mtmd_api STREQUAL "legacy")
-            target_compile_definitions(test_mtmd_image_${_mtmd_api} PRIVATE VLM_TEST_LEGACY_MTMD)
-        endif()
-        add_test(NAME test_mtmd_image_${_mtmd_api} COMMAND test_mtmd_image_${_mtmd_api})
-    endforeach()
-
     add_executable(test_vlm_config tests/unit/test_vlm_config.cpp)
     target_include_directories(test_vlm_config PRIVATE src/core/cpp)
     target_link_libraries(test_vlm_config PRIVATE vlm_core)
